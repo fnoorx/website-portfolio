@@ -1,7 +1,7 @@
 import Navbar from '../components/Navbar';
 import './ProjectPage.css';
 
-const MarketData = () => {
+const ProductScraper = () => {
 	return (
 		<>
 			<Navbar />
@@ -9,10 +9,10 @@ const MarketData = () => {
 				<a className="project-page-back" href="/#projects">
 					Back to projects
 				</a>
-				<h1>Market Data Bot</h1>
+				<h1>Product Scraper</h1>
 				<p>
-					Write the full project description here. Include the data sources,
-					automation logic, alerts, and what you learned from building it.
+					Write the full project description here. Include the problem, stack,
+					what you built, and what made it technically interesting.
 				</p>
 				<div className="project-page-video">Embedded video area</div>
 			</main>
@@ -20,4 +20,4 @@ const MarketData = () => {
 	);
 };
 
-export default MarketData;
+export default ProductScraper;

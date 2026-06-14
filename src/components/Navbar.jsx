@@ -1,7 +1,11 @@
 import './Navbar.css';
 
 const Navbar = () => {
-	const navLinks = ['Projects', 'Resume', 'Contact'];
+	const navLinks = [
+		{ label: 'Projects', href: '/#projects' },
+		{ label: 'Resume', href: '/#resume' },
+		{ label: 'Contact', href: '/#contact' },
+	];
 
 	return (
 		<nav className="navbar">
@@ -10,8 +14,8 @@ const Navbar = () => {
 			</a>
 			<ul className="navbar-links">
 				{navLinks.map((link) => (
-					<li key={link}>
-					<a href={`#${link.toLowerCase()}`}>{link}</a>
+					<li key={link.label}>
+						<a href={link.href}>{link.label}</a>
 					</li>
 				))}
 			</ul>

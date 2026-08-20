@@ -1,37 +1,31 @@
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+html,
+body,
+#root {
+	min-width: 320px;
+	min-height: 100%;
+	margin: 0;
 }
 
 body {
-  margin: 0;
-  min-width: 320px;
-  font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
-  color: var(--text);
-  background:
-    radial-gradient(circle at top left, rgba(124, 46, 196, 0.18), transparent 32%),
-    radial-gradient(circle at 85% 15%, rgba(109, 24, 143, 0.12), transparent 24%),
-    linear-gradient(180deg, var(--bg) 0%, #f2edf8 100%);
-}
-
-a {
-  color: inherit;
+	overflow: hidden;
 }
 
 button,
-input,
-textarea {
-  font: inherit;
+video {
+	-webkit-tap-highlight-color: transparent;
 }
 
-#root {
-  min-height: 100vh;
+button:focus-visible {
+	outline: 1px dotted currentColor;
+	outline-offset: -3px;
 }
 
-.section-shell {
-  width: min(calc(100% - 32px), var(--max-width));
-  margin: 0 auto;
+@media (max-width: 940px) {
+	body {
+		overflow: auto;
+	}
 }

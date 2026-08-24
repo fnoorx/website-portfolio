@@ -1,3 +1,19 @@
+:root {
+	--xp-font: Tahoma, Verdana, sans-serif;
+
+	/* Window chrome */
+	--xp-window-border: #0831d9;
+	--xp-face: #ece9d8;
+	--xp-divider: #aca899;
+
+	/* Controls */
+	--xp-blue: #174a97;
+	--xp-edge: #003c74;
+	--xp-focus: #f1b047;
+	--xp-arrow: #ffe879;
+	--xp-field-border: #7f9db9;
+}
+
 * {
 	box-sizing: border-box;
 }

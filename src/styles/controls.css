@@ -1,0 +1,74 @@
+/*
+ * Shared XP control primitives.
+ *
+ * Windows XP has exactly two command-button faces: the blue default action and
+ * the standard raised beige button. Everything below models those two, so new
+ * screens extend a variant instead of minting another one-off class.
+ *
+ * Usage: <button class="xp-button xp-button--primary">
+ *        <a class="xp-button xp-button--secondary xp-button--compact">
+ */
+
+.xp-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	border-radius: 3px;
+	font: inherit;
+	text-decoration: none;
+}
+
+.xp-button--primary {
+	min-width: 112px;
+	min-height: 33px;
+	padding: 7px 14px;
+	color: white;
+	background: linear-gradient(180deg, #4389e6, #1e5abd 58%, #174a9d);
+	border: 1px solid #07377e;
+	box-shadow: inset 0 1px rgba(255, 255, 255, 0.65), 1px 2px 2px rgba(0, 0, 0, 0.2);
+	font-weight: bold;
+	text-shadow: 1px 1px var(--xp-blue);
+}
+
+.xp-button--primary:hover {
+	filter: brightness(1.1);
+	box-shadow: inset 0 0 0 1px var(--xp-arrow), 1px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.xp-button--primary:active {
+	filter: brightness(0.9);
+	box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.xp-button--secondary {
+	min-height: 33px;
+	padding: 7px 14px;
+	color: var(--xp-blue);
+	background: linear-gradient(#fff, var(--xp-face));
+	border: 1px solid var(--xp-edge);
+	box-shadow: inset 0 0 0 1px white;
+	font-weight: bold;
+}
+
+.xp-button--secondary:hover {
+	box-shadow: inset 0 0 0 2px var(--xp-focus);
+}
+
+/* Toolbar-scale variant of either face. */
+.xp-button--compact {
+	min-width: 0;
+	min-height: 27px;
+	padding: 4px 10px;
+	color: #111;
+	font-weight: normal;
+}
+
+/* Leading play glyph on default actions. */
+.xp-button__arrow {
+	width: 0;
+	height: 0;
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-left: 7px solid var(--xp-arrow);
+}

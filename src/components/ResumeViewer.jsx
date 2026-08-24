@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import XpButton from './XpButton';
 
 const resumeUrl = '/resume.pdf';
 
@@ -25,11 +26,11 @@ export default function ResumeViewer() {
 	return (
 		<div className="resume-viewer">
 			<div className="resume-toolbar">
-				<div><FileStatus status={status} /><span>Faizan Noor - Resume.pdf</span></div>
+				<div><span className={`resume-status ${status}`} aria-hidden="true" /><span>Faizan Noor - Resume.pdf</span></div>
 				{status === 'ready' && (
 					<div className="resume-actions">
-						<a href={resumeUrl} target="_blank" rel="noreferrer">Open in new tab</a>
-						<a href={resumeUrl} download="Faizan-Noor-Resume.pdf">Download</a>
+						<a className="xp-button xp-button--secondary xp-button--compact" href={resumeUrl} target="_blank" rel="noreferrer">Open in new tab</a>
+						<a className="xp-button xp-button--secondary xp-button--compact" href={resumeUrl} download="Faizan-Noor-Resume.pdf">Download</a>
 					</div>
 				)}
 			</div>
@@ -43,14 +44,10 @@ export default function ResumeViewer() {
 					<span className="large-pdf-mark" aria-hidden="true">PDF</span>
 					<strong>{status === 'checking' ? 'Looking for resume.pdf...' : 'Resume file not found'}</strong>
 					<p>Place your PDF at <code>public/resume.pdf</code>, then check again.</p>
-					{status === 'missing' && <button className="secondary-xp-button" type="button" onClick={() => setCheckVersion((version) => version + 1)}>Check again</button>}
+					{status === 'missing' && <XpButton variant="secondary" compact onClick={() => setCheckVersion((version) => version + 1)}>Check again</XpButton>}
 				</div>
 			)}
 			<footer className="app-status-bar"><span>{status === 'ready' ? 'PDF document ready' : 'Expected URL: /resume.pdf'}</span></footer>
 		</div>
 	);
-}
-
-function FileStatus({ status }) {
-	return <span className={`resume-status ${status}`} aria-hidden="true" />;
 }

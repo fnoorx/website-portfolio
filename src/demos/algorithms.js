@@ -65,12 +65,11 @@ export function simulateMarketAlerts(prices, windowSize, thresholdPercent) {
 			signals.push({
 				index,
 				price,
-				baseline,
 				change,
 				type: change > 0 ? 'Momentum breakout' : 'Downside alert',
 			});
 		}
 	}
 
-	return { prices: normalizedPrices, period, threshold, signals };
+	return { prices: normalizedPrices, period, signals };
 }

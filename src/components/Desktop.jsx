@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import BudgetOptimizer from '../demos/BudgetOptimizer';
 import MarketAlertSimulator from '../demos/MarketAlertSimulator';
 import ResumeViewer from './ResumeViewer';
+import XpButton from './XpButton';
 import XpWindow, { FileIcon, WindowsLogo } from './XpWindow';
 import './Desktop.css';
 import '../demos/InteractiveDemos.css';
@@ -225,76 +226,75 @@ function Desktop() {
 					onClose={closeWindow}
 					onMove={moveWindow}
 				>
-
-						{selectedProjectId === 'about' ? (
-							<div className="notepad-window">
-								<div className="window-menu" aria-hidden="true">
-									<span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span>
-								</div>
-								<div className="notepad-copy">
-									<p>Hi, I&apos;m Faizan Noor.</p>
-									<p>I&apos;m a computer science student building practical software that turns messy inputs into useful systems.</p>
-									<p>I&apos;m especially interested in automation, data tools, and software people can maintain.</p>
-									<p>Status: available for software engineering internships</p>
-								</div>
+					{selectedProjectId === 'about' ? (
+						<div className="notepad-window">
+							<div className="window-menu" aria-hidden="true">
+								<span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span>
 							</div>
-						) : (
-							<div className="project-explorer">
-								<div className="window-menu" aria-hidden="true">
-									<span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span>
-								</div>
-								<div className="explorer-address">
-									<span>Address</span>
-									<div><FileIcon type="app" /> C:\Faizan\Projects\{selectedProject.name}</div>
-								</div>
-								<div className="project-content">
-									<aside className="project-sidebar">
-										<div className="sidebar-panel">
-											<h2>Project Tasks</h2>
-											<button className="play-demo-link" type="button" onClick={playProjectDemo}>Launch interactive demo</button>
-											{selectedProject.videoId && <button className="watch-video-link" type="button" onClick={playProjectVideo}>Watch video walkthrough</button>}
-											<button type="button" onClick={selectOtherProject}>Open the other project</button>
+							<div className="notepad-copy">
+								<p>Hi, I&apos;m Faizan Noor.</p>
+								<p>I&apos;m a computer science student building practical software that turns messy inputs into useful systems.</p>
+								<p>I&apos;m especially interested in automation, data tools, and software people can maintain.</p>
+								<p>Status: available for software engineering internships</p>
+							</div>
+						</div>
+					) : (
+						<div className="project-explorer">
+							<div className="window-menu" aria-hidden="true">
+								<span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span>
+							</div>
+							<div className="explorer-address">
+								<span>Address</span>
+								<div><FileIcon type="app" /> C:\Faizan\Projects\{selectedProject.name}</div>
+							</div>
+							<div className="project-content">
+								<aside className="project-sidebar">
+									<div className="sidebar-panel">
+										<h2>Project Tasks</h2>
+										<button className="play-demo-link" type="button" onClick={playProjectDemo}>Launch interactive demo</button>
+										{selectedProject.videoId && <button className="watch-video-link" type="button" onClick={playProjectVideo}>Watch video walkthrough</button>}
+										<button type="button" onClick={selectOtherProject}>Open the other project</button>
+									</div>
+									<div className="sidebar-panel details-panel">
+										<h2>Details</h2>
+										<span>{selectedProject.status}</span>
+									</div>
+								</aside>
+								<article className="project-details">
+									<div className="project-heading">
+										<FileIcon type="app" />
+										<div>
+											<p>Faizan Noor presents</p>
+											<h1>{selectedProject.name}</h1>
 										</div>
-										<div className="sidebar-panel details-panel">
-											<h2>Details</h2>
-											<span>{selectedProject.status}</span>
-										</div>
-									</aside>
-									<article className="project-details">
-										<div className="project-heading">
-											<FileIcon type="app" />
-											<div>
-												<p>Faizan Noor presents</p>
-												<h1>{selectedProject.name}</h1>
-											</div>
-										</div>
-										<p className="project-description">{selectedProject.description}</p>
-										{selectedProject.achievements && (
-											<section className="project-highlights">
-												<h2>Project highlights</h2>
-												<ul>
-													{selectedProject.achievements.map((achievement) => <li key={achievement}>{achievement}</li>)}
-												</ul>
-											</section>
+									</div>
+									<p className="project-description">{selectedProject.description}</p>
+									{selectedProject.achievements && (
+										<section className="project-highlights">
+											<h2>Project highlights</h2>
+											<ul>
+												{selectedProject.achievements.map((achievement) => <li key={achievement}>{achievement}</li>)}
+											</ul>
+										</section>
+									)}
+									<dl className="project-facts">
+										{selectedProject.details.map(([term, value]) => (
+											<div key={term}><dt>{term}</dt><dd>{value}</dd></div>
+										))}
+									</dl>
+									<div className="technology-list" aria-label="Technologies">
+										{selectedProject.stack.map((technology) => <span key={technology}>{technology}</span>)}
+									</div>
+									<div className="project-demo-actions">
+										<XpButton onClick={playProjectDemo}>Launch interactive demo</XpButton>
+										{selectedProject.videoId && (
+											<XpButton variant="secondary" icon={<span className="video-action-icon" aria-hidden="true" />} onClick={playProjectVideo}>Watch video walkthrough</XpButton>
 										)}
-										<dl className="project-facts">
-											{selectedProject.details.map(([term, value]) => (
-												<div key={term}><dt>{term}</dt><dd>{value}</dd></div>
-											))}
-										</dl>
-										<div className="technology-list" aria-label="Technologies">
-											{selectedProject.stack.map((technology) => <span key={technology}>{technology}</span>)}
-										</div>
-										<div className="project-demo-actions">
-											<button className="xp-action-button" type="button" onClick={playProjectDemo}><span aria-hidden="true" />Launch interactive demo</button>
-											{selectedProject.videoId && (
-												<button className="xp-secondary-action-button" type="button" onClick={playProjectVideo}><span className="video-action-icon" aria-hidden="true" />Watch video walkthrough</button>
-											)}
-										</div>
-									</article>
-								</div>
+									</div>
+								</article>
 							</div>
-						)}
+						</div>
+					)}
 				</XpWindow>
 
 				<XpWindow
@@ -311,35 +311,35 @@ function Desktop() {
 				>
 					<div className="demo-body">
 						<div className="demo-header">
-								<span>{selectedDemo.kind === 'video' ? 'Now playing' : 'Interactive application'}</span>
-								<strong>{selectedDemo.name}</strong>
-							</div>
-							<div className="demo-screen">
-								{selectedDemo.kind === 'video' ? (
-									<video key={selectedDemo.src} controls autoPlay loop muted playsInline src={selectedDemo.src} />
-								) : (
-									<div className="interactive-demo-launcher">
-										<FileIcon type="app" />
-										<strong>{selectedDemo.name}</strong>
-										<p>{selectedDemo.description}</p>
-										<button className="xp-action-button" type="button" onClick={() => openWindow(selectedDemo.appId)}><span aria-hidden="true" />Launch application</button>
-									</div>
-								)}
-							</div>
-							<div className="demo-playlist" role="list" aria-label="Demo playlist">
-								{demos.map((demo, index) => (
-									<button
-										className={demo.id === selectedDemo.id ? 'selected' : ''}
-										type="button"
-										key={demo.id}
-										onClick={() => selectDemo(demo)}
-									>
-										<span className="playlist-icon">{index + 1}</span>
-										<span><strong>{demo.name}</strong><small>{demo.fileName}</small></span>
-									</button>
-								))}
-							</div>
+							<span>{selectedDemo.kind === 'video' ? 'Now playing' : 'Interactive application'}</span>
+							<strong>{selectedDemo.name}</strong>
 						</div>
+						<div className="demo-screen">
+							{selectedDemo.kind === 'video' ? (
+								<video key={selectedDemo.src} controls autoPlay loop muted playsInline src={selectedDemo.src} />
+							) : (
+								<div className="interactive-demo-launcher">
+									<FileIcon type="app" />
+									<strong>{selectedDemo.name}</strong>
+									<p>{selectedDemo.description}</p>
+									<XpButton onClick={() => openWindow(selectedDemo.appId)}>Launch application</XpButton>
+								</div>
+							)}
+						</div>
+						<div className="demo-playlist" role="list" aria-label="Demo playlist">
+							{demos.map((demo, index) => (
+								<button
+									className={demo.id === selectedDemo.id ? 'selected' : ''}
+									type="button"
+									key={demo.id}
+									onClick={() => selectDemo(demo)}
+								>
+									<span className="playlist-icon">{index + 1}</span>
+									<span><strong>{demo.name}</strong><small>{demo.fileName}</small></span>
+								</button>
+							))}
+						</div>
+					</div>
 				</XpWindow>
 
 				<XpWindow

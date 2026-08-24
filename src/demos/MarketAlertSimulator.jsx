@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
+import XpButton from '../components/XpButton';
 import { simulateMarketAlerts } from './algorithms';
 
 const samplePriceText = '100, 101, 102, 108, 109, 104, 98, 97, 103, 110';
@@ -11,33 +12,27 @@ function parsePrices(value) {
 }
 
 function PriceChart({ prices, signals }) {
-	const points = useMemo(() => {
-		if (prices.length < 2) return '';
-		const min = Math.min(...prices);
-		const max = Math.max(...prices);
-		const range = Math.max(1, max - min);
-		return prices.map((price, index) => {
-			const x = (index / (prices.length - 1)) * 100;
-			const y = 40 - ((price - min) / range) * 34;
-			return `${x},${y}`;
-		}).join(' ');
-	}, [prices]);
-
 	if (prices.length < 2) return <div className="chart-empty">Enter at least two prices.</div>;
 
 	const min = Math.min(...prices);
-	const max = Math.max(...prices);
-	const range = Math.max(1, max - min);
+	const range = Math.max(1, Math.max(...prices) - min);
+	const scaleX = (index) => (index / (prices.length - 1)) * 100;
+	const scaleY = (price) => 40 - ((price - min) / range) * 34;
+	const points = prices.map((price, index) => `${scaleX(index)},${scaleY(price)}`).join(' ');
 
 	return (
 		<svg className="price-chart" viewBox="0 0 100 44" preserveAspectRatio="none" role="img" aria-label="Simulated market price series">
 			<line x1="0" y1="40" x2="100" y2="40" />
 			<polyline points={points} />
-			{signals.map((signal) => {
-				const x = (signal.index / (prices.length - 1)) * 100;
-				const y = 40 - ((signal.price - min) / range) * 34;
-				return <circle className={signal.change > 0 ? 'positive-signal' : 'negative-signal'} key={`${signal.index}-${signal.type}`} cx={x} cy={y} r="1.7" />;
-			})}
+			{signals.map((signal) => (
+				<circle
+					className={signal.change > 0 ? 'positive-signal' : 'negative-signal'}
+					key={`${signal.index}-${signal.type}`}
+					cx={scaleX(signal.index)}
+					cy={scaleY(signal.price)}
+					r="1.7"
+				/>
+			))}
 		</svg>
 	);
 }
@@ -68,7 +63,7 @@ export default function MarketAlertSimulator() {
 		<div className="interactive-app">
 			<header className="interactive-toolbar">
 				<div><strong>Market alert replay</strong><span>Rolling-baseline signal simulator</span></div>
-				<button className="secondary-xp-button" type="button" onClick={resetDemo}>Reset sample</button>
+				<XpButton variant="secondary" compact onClick={resetDemo}>Reset sample</XpButton>
 			</header>
 
 			<div className="market-layout">
@@ -82,7 +77,7 @@ export default function MarketAlertSimulator() {
 						<label><span>Rolling window</span><input type="number" min="2" max="10" value={windowSize} onChange={(event) => { setWindowSize(Number(event.target.value)); setDirty(true); }} /></label>
 						<label><span>Alert threshold</span><span className="percent-input"><input type="number" min="0.1" max="50" step="0.1" value={threshold} onChange={(event) => { setThreshold(Number(event.target.value)); setDirty(true); }} /><span>%</span></span></label>
 					</div>
-					<button className="run-demo-button" type="button" onClick={runSimulation}><span aria-hidden="true" />Run market replay</button>
+					<XpButton onClick={runSimulation}>Run market replay</XpButton>
 				</section>
 
 				<section className="market-results" aria-labelledby="market-results-title">

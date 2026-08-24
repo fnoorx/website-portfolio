@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import XpButton from '../components/XpButton';
 import { optimizePurchases } from './algorithms';
 
 const sampleProducts = [
@@ -63,7 +64,7 @@ export default function BudgetOptimizer() {
 					<strong>Budget-constrained purchasing</strong>
 					<span>0/1 knapsack optimizer</span>
 				</div>
-				<button className="secondary-xp-button" type="button" onClick={resetDemo}>Reset sample</button>
+				<XpButton variant="secondary" compact onClick={resetDemo}>Reset sample</XpButton>
 			</header>
 
 			<div className="optimizer-layout">
@@ -73,7 +74,7 @@ export default function BudgetOptimizer() {
 							<h2 id="candidate-products-title">Candidate products</h2>
 							<p>Recognizable products with illustrative pricing; each can be purchased once.</p>
 						</div>
-						<button className="secondary-xp-button" type="button" onClick={addProduct}>Add product</button>
+						<XpButton variant="secondary" compact onClick={addProduct}>Add product</XpButton>
 					</div>
 
 					<div className="data-table-wrap">
@@ -99,7 +100,7 @@ export default function BudgetOptimizer() {
 							<span>Available budget</span>
 							<span className="currency-input budget-input"><span>$</span><input type="number" min="1" max="10000" value={budget} onChange={(event) => { setBudget(Number(event.target.value)); setDirty(true); }} /></span>
 						</label>
-						<button className="run-demo-button" type="button" onClick={runOptimizer}><span aria-hidden="true" />Find best purchase plan</button>
+						<XpButton onClick={runOptimizer}>Find best purchase plan</XpButton>
 					</div>
 				</section>
 

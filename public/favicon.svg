@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect x="2" y="2" width="60" height="60" rx="8" fill="#1765d1" stroke="#003caa" stroke-width="4" />
+  <path d="M8 6h48a4 4 0 0 1 4 4v7H4v-7a4 4 0 0 1 4-4Z" fill="#3d8ae4" />
+  <path d="M8 58h48a4 4 0 0 0 4-4v-5H4v5a4 4 0 0 0 4 4Z" fill="#2f9f28" />
+  <text x="32" y="43" fill="#fff" font-family="Tahoma, Arial, sans-serif" font-size="30" font-weight="700" text-anchor="middle">FN</text>
+</svg>

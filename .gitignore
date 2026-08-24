@@ -1,4 +1,22 @@
 node_modules/
 dist/
+coverage/
+
+# Local environment variables and deployment credentials
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+.vercel/
+.wrangler/
+
+# Private keys and local logs
+*.key
+*.pem
+*.p12
+*.pfx
+*.log
+
 .DS_Store
 Thumbs.db

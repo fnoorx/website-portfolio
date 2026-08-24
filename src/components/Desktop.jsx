@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import BudgetOptimizer from '../demos/BudgetOptimizer';
-import MarketAlertSimulator from '../demos/MarketAlertSimulator';
+import InventoryLifecycleSimulator from '../demos/InventoryLifecycleSimulator';
+import RecruiterProfile from './RecruiterProfile';
 import ResumeViewer from './ResumeViewer';
 import XpButton from './XpButton';
 import XpWindow, { FileIcon, WindowsLogo } from './XpWindow';
@@ -9,48 +10,74 @@ import '../demos/InteractiveDemos.css';
 
 const projects = [
 	{
+		id: 'resale-platform',
+		name: 'Resale Operations & Inventory Platform',
+		status: 'Running in production since 2023',
+		stack: ['Python', 'SQLite', 'Discord.py', 'OpenCV', 'zxing-cpp', 'OpenAI API', 'StockX API', 'Google Sheets API', 'pytest'],
+		outcome:
+			'The internal platform that runs the business day to day. It takes a physical shoe box from label scan to reconciled sale: resolving the exact product variant, giving every unit a permanent identity, and keeping inventory, payouts, and profit in sync across SQLite, Discord, and Google Sheets.',
+		metrics: [
+			['45s \u2192 5s', 'Price research per item'],
+			['1,129 rows', 'Backfilled, zero duplicate IDs'],
+			['100+ tests', 'Failure recovery validated'],
+		],
+		achievements: [
+			['Durable identity layer', 'Transactional SQLite with immutable unit IDs, schema migrations, and message-level idempotency, so a retried Discord command or a half-finished sync can never mint a duplicate unit.'],
+			['Retry-safe synchronization', 'Google Sheets writes are replay-safe rather than fire-and-forget. A backfill of 1,129 historical rows completed without a single duplicate unit identity.'],
+			['Hybrid label intake', 'OpenCV and zxing-cpp read the barcode, UPC/EAN check digits validate it, and OpenAI Structured Outputs resolve the exact StockX variant. Ambiguous scans are blocked rather than guessed.'],
+			['Automated reconciliation', 'StockX sales match back to inventory by normalized style and size, updating payout, profit, and unit state. 100+ tests cover the failure paths using temporary databases and mocked APIs.'],
+		],
+		flow: ['Label intake', 'Variant resolution', 'Inventory identity', 'Sale reconciliation'],
+		details: [
+			['Type', 'Internal operations platform'],
+			['Scale', '1,064 sales and 1,129 inventory rows under management'],
+			['Status', 'In daily production use'],
+		],
+		appId: 'inventory-lifecycle',
+		demoId: 'inventory-lifecycle-demo',
+		sourceNote: 'Private production system; the simulator reproduces the real intake and reconciliation logic on synthetic data.',
+	},
+	{
 		id: 'product-scraper',
 		name: 'Product Discovery & Profitability Engine',
 		status: 'Demo ready',
 		stack: ['Python', 'Selenium', 'REST APIs', 'Regex', 'JSON', 'Concurrent Processing', 'Dynamic Programming'],
-		description:
+		outcome:
 			'An authenticated catalogue-monitoring and purchasing engine that discovers products, evaluates resale profitability, and ranks buying opportunities against a fixed budget.',
-		achievements: [
-			'Built a snapshot-and-diff pipeline for a dynamic product catalogue, reducing a recurring 15-minute review to 2-3 minutes - 80% faster and approximately 50 hours saved annually.',
-			'Engineered resilient extraction for lazy-loaded and paginated pages using load stabilization, fallback parsing, and partial-result recovery. Extracted missing style codes from image URLs and validated them against product identifiers.',
-			'Built a size-aware purchasing engine using throttled concurrent StockX requests to estimate net profit after taxes and fees, rank opportunities by ROI, and apply 0/1 knapsack optimization for budget-constrained purchasing.',
+		metrics: [
+			['15 min \u2192 2-3 min', 'Recurring catalogue review'],
+			['80%', 'Faster end to end'],
+			['~50 hrs', 'Saved annually'],
 		],
+		achievements: [
+			['Catalogue monitoring', 'Snapshots and diffs an authenticated, dynamic catalogue instead of repeatedly reviewing every product.'],
+			['Resilient extraction', 'Stabilizes lazy-loaded and paginated pages, recovers partial results, and validates style codes parsed from image URLs.'],
+			['Profit optimization', 'Throttles concurrent StockX requests, estimates net profit after fees, ranks ROI, and applies 0/1 knapsack selection.'],
+		],
+		flow: ['Catalogue diff', 'Resilient extraction', 'Profit & ROI model', 'Budget optimizer'],
 		details: [
 			['Type', 'Discovery and purchasing engine'],
 			['Impact', '80% faster; ~50 hours saved annually'],
 			['Status', 'Working demo'],
 		],
 		appId: 'optimizer',
+		demoId: 'optimizer-demo',
 		videoId: 'scraper-video',
-	},
-	{
-		id: 'market-data-bot',
-		name: 'Market Data Bot',
-		status: 'In progress',
-		stack: ['Market data', 'Alerts', 'Bot logic'],
-		description:
-			'Tracks market data and turns raw movement into useful signals. The bot monitors changes, surfaces patterns, and reduces repetitive manual checking.',
-		details: [
-			['Type', 'Monitoring bot'],
-			['Output', 'Market alerts'],
-			['Status', 'In development'],
-		],
-		appId: 'market-simulator',
+		sourceNote: 'Private production project; architecture and behavior are demonstrated here.',
 	},
 ];
 
 const demos = [
 	{
-		id: 'scraper-video',
-		name: 'Product Engine Walkthrough',
-		fileName: 'product-scraper-demo.mp4',
-		kind: 'video',
-		src: '/videos/product-scraper-demo.mp4',
+		id: 'inventory-lifecycle-demo',
+		name: 'Inventory Lifecycle Simulator',
+		fileName: 'interactive label-to-sale workflow',
+		kind: 'app',
+		appId: 'inventory-lifecycle',
+		projectId: 'resale-platform',
+		projectName: 'Resale Operations & Inventory Platform',
+		description:
+			'Process a synthetic shoe-box label, review the validation evidence, create a permanent inventory record, and reconcile a simulated StockX sale. One of the three sample labels carries a deliberate size conflict so you can see how ambiguous scans are blocked instead of guessed.',
 	},
 	{
 		id: 'optimizer-demo',
@@ -58,23 +85,30 @@ const demos = [
 		fileName: 'interactive 0/1 knapsack demo',
 		kind: 'app',
 		appId: 'optimizer',
-		description: 'Choose the highest-profit purchasing plan for a fixed budget.',
+		projectId: 'product-scraper',
+		projectName: 'Product Discovery & Profitability Engine',
+		description:
+			'Enter products, costs, expected profits, and a budget. The optimizer selects the group of products with the highest total profit without going over budget.',
 	},
 	{
-		id: 'market-alert-demo',
-		name: 'Market Alert Simulator',
-		fileName: 'interactive signal replay',
-		kind: 'app',
-		appId: 'market-simulator',
-		description: 'Replay price observations and inspect generated market alerts.',
+		id: 'scraper-video',
+		name: 'Catalogue Monitor to Discord Alert',
+		fileName: 'product-scraper-demo.mp4',
+		kind: 'video',
+		src: '/videos/product-scraper-demo.mp4',
+		projectId: 'product-scraper',
+		projectName: 'Product Discovery & Profitability Engine',
+		description:
+			'The engine scans a retailer catalogue, finds new products, compares retail prices with estimated market values, and sends a Discord alert showing each item\'s possible profit or loss.',
 	},
 ];
 
 const desktopFiles = [
-	{ id: 'product-scraper', label: 'Product Discovery & Profitability Engine.exe', icon: 'app' },
-	{ id: 'market-data-bot', label: 'Market Data Bot.exe', icon: 'app' },
-	{ id: 'about', label: 'About Faizan.txt', icon: 'document' },
+	{ id: 'resale-platform', label: 'Resale Operations Platform.exe', icon: 'app' },
+	{ id: 'product-scraper', label: 'Product Discovery Engine.exe', icon: 'app' },
+	{ id: 'about', label: 'About Faizan.exe', icon: 'app' },
 	{ id: 'resume', label: 'Faizan Noor - Resume.pdf', icon: 'pdf', windowId: 'resume' },
+	{ id: 'contact', label: 'Contact Faizan.url', icon: 'document' },
 ];
 
 function bringWindowToFront(current, id, updates = {}) {
@@ -91,8 +125,10 @@ function bringWindowToFront(current, id, updates = {}) {
 }
 
 function Desktop() {
-	const [selectedProjectId, setSelectedProjectId] = useState('product-scraper');
-	const [selectedDemoId, setSelectedDemoId] = useState('scraper-video');
+	const [selectedProjectId, setSelectedProjectId] = useState('about');
+	const [selectedDemoId, setSelectedDemoId] = useState('inventory-lifecycle-demo');
+	const [profileTab, setProfileTab] = useState('general');
+	const [videoStarted, setVideoStarted] = useState(false);
 	const [startOpen, setStartOpen] = useState(false);
 	const [activeWindow, setActiveWindow] = useState('project');
 	const [time, setTime] = useState(new Date());
@@ -100,7 +136,7 @@ function Desktop() {
 		project: { open: true, minimized: false, maximized: false, position: { x: 0, y: 0 }, z: 3 },
 		demos: { open: true, minimized: false, maximized: false, position: { x: 0, y: 0 }, z: 2 },
 		optimizer: { open: false, minimized: false, maximized: false, position: { x: 0, y: 0 }, z: 1 },
-		'market-simulator': { open: false, minimized: false, maximized: false, position: { x: 36, y: 24 }, z: 1 },
+		'inventory-lifecycle': { open: false, minimized: false, maximized: false, position: { x: 24, y: 16 }, z: 1 },
 		resume: { open: false, minimized: false, maximized: false, position: { x: 20, y: 12 }, z: 1 },
 	});
 
@@ -158,11 +194,20 @@ function Desktop() {
 
 	const openProject = (id) => {
 		setSelectedProjectId(id);
+		const project = projects.find((entry) => entry.id === id);
+		if (project?.demoId) selectDemo(project.demoId);
 		openWindow('project');
 	};
 
+	const openProfile = (tab = 'general') => {
+		setProfileTab(tab);
+		openProject('about');
+	};
+
 	const openDesktopFile = (file) => {
-		if (file.windowId) {
+		if (file.id === 'contact') {
+			openProfile('contact');
+		} else if (file.windowId) {
 			openWindow(file.windowId);
 		} else {
 			openProject(file.id);
@@ -175,29 +220,24 @@ function Desktop() {
 
 	const playProjectVideo = () => {
 		if (!selectedProject.videoId) return;
-		setSelectedDemoId(selectedProject.videoId);
+		selectDemo(selectedProject.videoId);
 		openWindow('demos');
 	};
 
-	const selectDemo = (demo) => {
-		setSelectedDemoId(demo.id);
-		if (demo.kind === 'app') openWindow(demo.appId);
-	};
-
-	const selectOtherProject = () => {
-		const otherProject = projects.find((project) => project.id !== selectedProject.id);
-		setSelectedProjectId(otherProject.id);
+	const selectDemo = (id) => {
+		setSelectedDemoId(id);
+		setVideoStarted(false);
 	};
 
 	const taskbarItems = [
 		{
 			id: 'project',
-			title: selectedProjectId === 'about' ? 'About Faizan.txt' : selectedProject.name,
-			iconType: selectedProjectId === 'about' ? 'document' : 'app',
+			title: selectedProjectId === 'about' ? 'About Faizan' : selectedProject.name,
+			iconType: 'app',
 		},
 		{ id: 'demos', title: 'Project Demos', iconType: 'app' },
 		{ id: 'optimizer', title: 'Budget Optimizer', iconType: 'app' },
-		{ id: 'market-simulator', title: 'Market Alert Simulator', iconType: 'app' },
+		{ id: 'inventory-lifecycle', title: 'Inventory Lifecycle', iconType: 'app' },
 		{ id: 'resume', title: 'Faizan Noor - Resume.pdf', iconType: 'pdf' },
 	];
 
@@ -215,8 +255,8 @@ function Desktop() {
 
 				<XpWindow
 					id="project"
-					title={selectedProjectId === 'about' ? 'About Faizan.txt - Notepad' : `${selectedProject.name} - My Projects`}
-					iconType={selectedProjectId === 'about' ? 'document' : 'app'}
+					title={selectedProjectId === 'about' ? 'Faizan Noor - System Properties' : `${selectedProject.name} - My Projects`}
+					iconType="app"
 					className="project-window"
 					windowState={windowStates.project}
 					isActive={activeWindow === 'project'}
@@ -227,17 +267,12 @@ function Desktop() {
 					onMove={moveWindow}
 				>
 					{selectedProjectId === 'about' ? (
-						<div className="notepad-window">
-							<div className="window-menu" aria-hidden="true">
-								<span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span>
-							</div>
-							<div className="notepad-copy">
-								<p>Hi, I&apos;m Faizan Noor.</p>
-								<p>I&apos;m a computer science student building practical software that turns messy inputs into useful systems.</p>
-								<p>I&apos;m especially interested in automation, data tools, and software people can maintain.</p>
-								<p>Status: available for software engineering internships</p>
-							</div>
-						</div>
+						<RecruiterProfile
+							activeTab={profileTab}
+							onTabChange={setProfileTab}
+							onOpenProject={openProject}
+							onOpenResume={() => openWindow('resume')}
+						/>
 					) : (
 						<div className="project-explorer">
 							<div className="window-menu" aria-hidden="true">
@@ -253,11 +288,13 @@ function Desktop() {
 										<h2>Project Tasks</h2>
 										<button className="play-demo-link" type="button" onClick={playProjectDemo}>Launch interactive demo</button>
 										{selectedProject.videoId && <button className="watch-video-link" type="button" onClick={playProjectVideo}>Watch video walkthrough</button>}
-										<button type="button" onClick={selectOtherProject}>Open the other project</button>
+										<button type="button" onClick={() => openProfile('general')}>View candidate profile</button>
+										<button type="button" onClick={() => openWindow('resume')}>Open resume</button>
 									</div>
 									<div className="sidebar-panel details-panel">
 										<h2>Details</h2>
 										<span>{selectedProject.status}</span>
+										{selectedProject.sourceNote && <span>{selectedProject.sourceNote}</span>}
 									</div>
 								</aside>
 								<article className="project-details">
@@ -268,13 +305,38 @@ function Desktop() {
 											<h1>{selectedProject.name}</h1>
 										</div>
 									</div>
-									<p className="project-description">{selectedProject.description}</p>
+									<p className="project-description">{selectedProject.outcome}</p>
+									{selectedProject.metrics && (
+										<div className="project-metrics" aria-label="Project outcomes">
+											{selectedProject.metrics.map(([value, label]) => (
+												<div key={label}><strong>{value}</strong><span>{label}</span></div>
+											))}
+										</div>
+									)}
+									<div className="project-demo-actions project-demo-actions--primary">
+										<XpButton onClick={playProjectDemo}>Launch interactive demo</XpButton>
+										{selectedProject.videoId && (
+											<XpButton variant="secondary" icon={<span className="video-action-icon" aria-hidden="true" />} onClick={playProjectVideo}>Watch video walkthrough</XpButton>
+										)}
+									</div>
+									{selectedProject.flow && (
+										<section className="project-flow">
+											<h2>System flow</h2>
+											<div>
+												{selectedProject.flow.map((stage, index) => (
+													<span key={stage}><b>{index + 1}</b>{stage}</span>
+												))}
+											</div>
+										</section>
+									)}
 									{selectedProject.achievements && (
 										<section className="project-highlights">
-											<h2>Project highlights</h2>
-											<ul>
-												{selectedProject.achievements.map((achievement) => <li key={achievement}>{achievement}</li>)}
-											</ul>
+											<h2>Engineering decisions</h2>
+											<div className="decision-list">
+												{selectedProject.achievements.map(([title, detail]) => (
+													<div key={title}><strong>{title}</strong><p>{detail}</p></div>
+												))}
+											</div>
 										</section>
 									)}
 									<dl className="project-facts">
@@ -284,12 +346,6 @@ function Desktop() {
 									</dl>
 									<div className="technology-list" aria-label="Technologies">
 										{selectedProject.stack.map((technology) => <span key={technology}>{technology}</span>)}
-									</div>
-									<div className="project-demo-actions">
-										<XpButton onClick={playProjectDemo}>Launch interactive demo</XpButton>
-										{selectedProject.videoId && (
-											<XpButton variant="secondary" icon={<span className="video-action-icon" aria-hidden="true" />} onClick={playProjectVideo}>Watch video walkthrough</XpButton>
-										)}
 									</div>
 								</article>
 							</div>
@@ -311,28 +367,47 @@ function Desktop() {
 				>
 					<div className="demo-body">
 						<div className="demo-header">
-							<span>{selectedDemo.kind === 'video' ? 'Now playing' : 'Interactive application'}</span>
+							<span>{selectedDemo.kind === 'video' ? 'Video walkthrough' : 'Interactive application'}</span>
 							<strong>{selectedDemo.name}</strong>
+							<button
+								className="demo-project"
+								type="button"
+								onClick={() => openProject(selectedDemo.projectId)}
+								title={`Open ${selectedDemo.projectName}`}
+							>
+								<small>Resume project</small>
+								<span>{selectedDemo.projectName}</span>
+							</button>
 						</div>
+						<p className="demo-description"><strong>What this demo shows:</strong> {selectedDemo.description}</p>
 						<div className="demo-screen">
 							{selectedDemo.kind === 'video' ? (
-								<video key={selectedDemo.src} controls autoPlay loop muted playsInline src={selectedDemo.src} />
+								videoStarted ? (
+									<video key={selectedDemo.src} controls autoPlay loop muted playsInline preload="metadata" src={selectedDemo.src} />
+								) : (
+									<div className="interactive-demo-launcher">
+										<span className="video-poster-mark" aria-hidden="true" />
+										<strong>{selectedDemo.name}</strong>
+										<small>7 MB video &middot; loads when you press play</small>
+										<XpButton onClick={() => setVideoStarted(true)}>Play walkthrough</XpButton>
+									</div>
+								)
 							) : (
 								<div className="interactive-demo-launcher">
 									<FileIcon type="app" />
 									<strong>{selectedDemo.name}</strong>
-									<p>{selectedDemo.description}</p>
+									<small>Runs in its own window &middot; no setup required</small>
 									<XpButton onClick={() => openWindow(selectedDemo.appId)}>Launch application</XpButton>
 								</div>
 							)}
 						</div>
-						<div className="demo-playlist" role="list" aria-label="Demo playlist">
+						<div className="demo-playlist" role="group" aria-label="Demo playlist">
 							{demos.map((demo, index) => (
 								<button
 									className={demo.id === selectedDemo.id ? 'selected' : ''}
 									type="button"
 									key={demo.id}
-									onClick={() => selectDemo(demo)}
+									onClick={() => selectDemo(demo.id)}
 								>
 									<span className="playlist-icon">{index + 1}</span>
 									<span><strong>{demo.name}</strong><small>{demo.fileName}</small></span>
@@ -358,21 +433,6 @@ function Desktop() {
 				</XpWindow>
 
 				<XpWindow
-					id="market-simulator"
-					title="Market Alert Simulator - Market Data Bot"
-					className="interactive-window market-simulator-window"
-					windowState={windowStates['market-simulator']}
-					isActive={activeWindow === 'market-simulator'}
-					onFocus={focusWindow}
-					onMinimize={minimizeWindow}
-					onMaximize={toggleMaximize}
-					onClose={closeWindow}
-					onMove={moveWindow}
-				>
-					<MarketAlertSimulator />
-				</XpWindow>
-
-				<XpWindow
 					id="resume"
 					title="Faizan Noor - Resume.pdf"
 					iconType="pdf"
@@ -387,16 +447,33 @@ function Desktop() {
 				>
 					<ResumeViewer />
 				</XpWindow>
+
+				<XpWindow
+					id="inventory-lifecycle"
+					title="Inventory Lifecycle Simulator - Resale Operations Platform"
+					className="interactive-window lifecycle-window"
+					windowState={windowStates['inventory-lifecycle']}
+					isActive={activeWindow === 'inventory-lifecycle'}
+					onFocus={focusWindow}
+					onMinimize={minimizeWindow}
+					onMaximize={toggleMaximize}
+					onClose={closeWindow}
+					onMove={moveWindow}
+				>
+					<InventoryLifecycleSimulator />
+				</XpWindow>
 			</div>
 
 			{startOpen && (
 				<div className="start-menu" onClick={(event) => event.stopPropagation()}>
 					<header><span className="user-avatar">FN</span><strong>Faizan Noor</strong></header>
 					<div className="start-menu-content">
-						<button type="button" onClick={() => openProject('about')}><FileIcon type="document" /><span><strong>About Faizan</strong><small>Read introduction</small></span></button>
-						<button type="button" onClick={() => openProject('product-scraper')}><FileIcon type="app" /><span><strong>My Projects</strong><small>Browse software</small></span></button>
+						<button type="button" onClick={() => openProfile('general')}><FileIcon type="app" /><span><strong>About Faizan</strong><small>Candidate profile and skills</small></span></button>
+						<button type="button" onClick={() => openProject('resale-platform')}><FileIcon type="app" /><span><strong>Resale Operations Platform</strong><small>Identity layer, label intake, reconciliation</small></span></button>
+						<button type="button" onClick={() => openProject('product-scraper')}><FileIcon type="app" /><span><strong>Product Discovery Engine</strong><small>Catalogue diffing and budget optimization</small></span></button>
 						<button type="button" onClick={() => openWindow('demos')}><FileIcon type="app" /><span><strong>Project Demos</strong><small>Launch videos and apps</small></span></button>
 						<button type="button" onClick={() => openWindow('resume')}><FileIcon type="pdf" /><span><strong>My Resume</strong><small>Open PDF document</small></span></button>
+						<button type="button" onClick={() => openProfile('contact')}><FileIcon type="document" /><span><strong>Contact</strong><small>Email, GitHub, and LinkedIn</small></span></button>
 					</div>
 					<footer>portfolio.exe</footer>
 				</div>

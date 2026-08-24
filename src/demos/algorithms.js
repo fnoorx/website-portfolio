@@ -48,28 +48,3 @@ export function optimizePurchases(products, budget) {
 		capacity,
 	};
 }
-
-export function simulateMarketAlerts(prices, windowSize, thresholdPercent) {
-	const normalizedPrices = prices.filter((price) => Number.isFinite(price) && price > 0);
-	const period = Math.max(2, Math.min(10, Math.floor(Number(windowSize) || 3)));
-	const threshold = Math.max(0.1, Number(thresholdPercent) || 4);
-	const signals = [];
-
-	for (let index = period; index < normalizedPrices.length; index += 1) {
-		const history = normalizedPrices.slice(index - period, index);
-		const baseline = history.reduce((total, price) => total + price, 0) / history.length;
-		const price = normalizedPrices[index];
-		const change = ((price - baseline) / baseline) * 100;
-
-		if (Math.abs(change) >= threshold) {
-			signals.push({
-				index,
-				price,
-				change,
-				type: change > 0 ? 'Momentum breakout' : 'Downside alert',
-			});
-		}
-	}
-
-	return { prices: normalizedPrices, period, signals };
-}

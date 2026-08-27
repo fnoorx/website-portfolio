@@ -689,6 +689,12 @@ button {
 	border-bottom: 1px solid #888;
 }
 
+.profile-tablist {
+	display: flex;
+	align-items: flex-end;
+	gap: 2px;
+}
+
 .profile-tabs button {
 	position: relative;
 	top: 1px;
@@ -706,6 +712,19 @@ button {
 	background: var(--xp-face);
 	border-bottom-color: var(--xp-face);
 	font-weight: bold;
+}
+
+.profile-tabs .profile-resume-tab {
+	color: #174a97;
+	background: linear-gradient(#fff, #dce9fb);
+	border-color: #557fb8;
+	font-weight: bold;
+}
+
+.profile-tabs .profile-resume-tab:hover,
+.profile-tabs .profile-resume-tab:focus-visible {
+	color: #0b3470;
+	background: #fff;
 }
 
 .profile-panel {

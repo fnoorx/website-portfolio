@@ -1,0 +1,112 @@
+.boot-screen {
+	position: fixed;
+	inset: 0;
+	z-index: 10000;
+	display: grid;
+	grid-template-rows: 1fr auto auto 1fr;
+	min-width: 320px;
+	min-height: 100dvh;
+	align-items: center;
+	justify-items: center;
+	padding: 32px 20px;
+	color: white;
+	background: #050505;
+	cursor: default;
+	user-select: none;
+	animation: boot-screen-exit var(--boot-fade, 160ms) ease
+		calc(var(--boot-duration, 1240ms) - var(--boot-fade, 160ms)) forwards;
+}
+
+.boot-brand {
+	grid-row: 2;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-bottom: 32px;
+}
+
+.boot-mark {
+	display: grid;
+	width: 58px;
+	height: 58px;
+	place-items: center;
+	color: white;
+	background: linear-gradient(180deg, #3d8ae4 0 23%, #1765d1 23% 80%, #2f9f28 80%);
+	border: 2px solid #4a9bf0;
+	border-radius: 7px;
+	box-shadow: 0 0 0 1px #003caa, 0 0 18px rgba(46, 124, 224, 0.35);
+	font-size: 25px;
+	font-weight: bold;
+}
+
+.boot-wordmark strong,
+.boot-wordmark small {
+	display: block;
+	letter-spacing: 0;
+}
+
+.boot-wordmark strong {
+	font-size: 38px;
+	font-weight: normal;
+}
+
+.boot-wordmark small {
+	margin-top: 1px;
+	color: #f28c28;
+	font-size: 15px;
+	font-weight: bold;
+	text-align: right;
+}
+
+.boot-progress {
+	grid-row: 3;
+	display: flex;
+	width: 176px;
+	height: 18px;
+	align-items: center;
+	gap: 4px;
+	overflow: hidden;
+	padding: 3px;
+	background: #090909;
+	border: 1px solid #707070;
+	border-radius: 4px;
+}
+
+.boot-progress span {
+	flex: 0 0 28px;
+	height: 10px;
+	background: linear-gradient(180deg, #62a5f2, #1257bd 62%, #083b96);
+	border-radius: 2px;
+	box-shadow: inset 0 1px rgba(255, 255, 255, 0.4);
+	animation: boot-progress 720ms linear infinite;
+}
+
+.boot-screen p {
+	grid-row: 4;
+	align-self: start;
+	margin: 16px 0 0;
+	color: #a9a9a9;
+	font-size: 12px;
+}
+
+@keyframes boot-progress {
+	from { transform: translateX(-102px); }
+	to { transform: translateX(176px); }
+}
+
+@keyframes boot-screen-exit {
+	to { opacity: 0; }
+}
+
+@media (max-width: 480px) {
+	.boot-brand { gap: 12px; }
+	.boot-mark { width: 50px; height: 50px; font-size: 21px; }
+	.boot-wordmark strong { font-size: 30px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.boot-screen,
+	.boot-progress span {
+		animation: none;
+	}
+}

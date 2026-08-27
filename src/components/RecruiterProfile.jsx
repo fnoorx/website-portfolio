@@ -50,22 +50,27 @@ export default function RecruiterProfile({ activeTab, onTabChange, onOpenProject
 
 	return (
 		<div className="profile-app">
-			<div className="profile-tabs" role="tablist" aria-label="Faizan Noor profile sections" onKeyDown={activateTab}>
-				{tabs.map(([id, label]) => (
-					<button
-						className={activeTab === id ? 'active' : ''}
-						type="button"
-						role="tab"
-						id={`profile-tab-${id}`}
-						aria-selected={activeTab === id}
-						aria-controls="profile-panel"
-						tabIndex={activeTab === id ? 0 : -1}
-						key={id}
-						onClick={() => onTabChange(id)}
-					>
-						{label}
-					</button>
-				))}
+			<div className="profile-tabs">
+				<div className="profile-tablist" role="tablist" aria-label="Faizan Noor profile sections" onKeyDown={activateTab}>
+					{tabs.map(([id, label]) => (
+						<button
+							className={activeTab === id ? 'active' : ''}
+							type="button"
+							role="tab"
+							id={`profile-tab-${id}`}
+							aria-selected={activeTab === id}
+							aria-controls="profile-panel"
+							tabIndex={activeTab === id ? 0 : -1}
+							key={id}
+							onClick={() => onTabChange(id)}
+						>
+							{label}
+						</button>
+					))}
+				</div>
+				<button className="profile-resume-tab" type="button" onClick={onOpenResume} aria-label="Open Faizan Noor resume PDF">
+					Resume
+				</button>
 			</div>
 
 			<div className="profile-panel" role="tabpanel" id="profile-panel" aria-labelledby={`profile-tab-${activeTab}`} tabIndex={0}>
@@ -82,7 +87,7 @@ export default function RecruiterProfile({ activeTab, onTabChange, onOpenProject
 						</header>
 
 						<p className="profile-summary">
-							I started a resale business, got tired of repetitive work, and made it Python&apos;s problem. Since 2023, I&apos;ve built
+							I started a resale business, got tired of repetitive work, and decided to automate it. Since 2023, I&apos;ve built
 							and operated the internal systems behind 1,000+ sales and $150K+ CAD in revenue. That work has taught me how to turn
 							messy workflows, unreliable APIs, and real operating constraints into dependable software.
 						</p>
